@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "k3ng_cw_keyer_config", "k3ng_cw_keyer_config\k3ng_cw_keyer_config.csproj", "{4B3B9322-2170-4C62-83BA-549DA4217468}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "k3ng_cw_keyer_config.Desktop", "k3ng_cw_keyer_config.Desktop\k3ng_cw_keyer_config.Desktop.csproj", "{B51993C2-21BD-4706-B9F3-C5A5D96A7F8E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4B3B9322-2170-4C62-83BA-549DA4217468}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B3B9322-2170-4C62-83BA-549DA4217468}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B3B9322-2170-4C62-83BA-549DA4217468}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B3B9322-2170-4C62-83BA-549DA4217468}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B51993C2-21BD-4706-B9F3-C5A5D96A7F8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B51993C2-21BD-4706-B9F3-C5A5D96A7F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B51993C2-21BD-4706-B9F3-C5A5D96A7F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B51993C2-21BD-4706-B9F3-C5A5D96A7F8E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AD9360F0-95A9-46EF-B55A-90512AC1E4E6}
+	EndGlobalSection
+EndGlobal

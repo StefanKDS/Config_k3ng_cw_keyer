@@ -1,0 +1,116 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:k3ng_cw_keyer_config.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="k3ng_cw_keyer_config.Views.MainView"
+             x:DataType="vm:MainViewModel">
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:MainViewModel />
+  </Design.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="520"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            
+            <ComboBox ItemsSource="{Binding PortList}"
+                      Grid.Row="0"
+                      Width="200"
+                      Height="25"
+                      Margin="5,5,0,0"
+                      SelectedValue="{Binding SelectedPort, Mode=TwoWay}"/>
+
+                <Grid Grid.Row="1" Margin="5,5,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="5,5,0,0" Orientation="Vertical">                 
+                        <Button Margin="0,0,0,3" Content="Help" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Iambic A mode" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Iambic B mode" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Switch to CW (from Hell)" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Ultimatic mode" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Bug mode" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Switch to Hell sending" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Transmit enable/disable" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="CW Training Module" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Toggle paddle reverse" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Toggle sidetone on/off" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Switch to regular speed mode" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Status" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Tune mode" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Manual PTT toggle" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Autospace on/off" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Create prosign" Width="200" HorizontalContentAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="5,5,0,0" Orientation="Vertical">
+                        <Button Margin="0,0,0,3" Content="Set serial number to" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Set sidetone frequency to" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Set weighting" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Set Farnsworth speed" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Program memory" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Switch to QRSS mode, dit length" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Set speed in WPM" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Switch to transmitter" Width="200" HorizontalContentAlignment="Center"/>
+                        <Button Margin="0,0,0,3" Content="Change wordspace to" Width="200" HorizontalContentAlignment="Center"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Margin="5,5,0,0" Orientation="Vertical">
+                        <TextBox Height="20" Margin="0,0,0,0"/>
+                        <TextBox Height="20" Margin="0,1,0,0"/>
+                        <TextBox Height="20" Margin="0,2,0,0"/>
+                        <TextBox Height="20" Margin="0,2,0,0"/>
+                        <TextBox Height="20" Margin="0,2,0,0"/>
+                        <TextBox Height="20" Margin="0,2,0,0"/>
+                        <TextBox Height="20" Margin="0,2,0,0"/>
+                        <TextBox Height="20" Margin="0,2,0,0"/>
+                        <TextBox Height="20" Margin="0,2,0,0"/>
+                            
+                    </StackPanel>
+
+                </Grid>
+            
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            
+            <TextBox Grid.Row="0" Margin="10,10,10,10" Text="{Binding OutputText, Mode=TwoWay}" TextWrapping="Wrap" AcceptsReturn="True" CaretIndex="{Binding OutputCaretIndex}" />
+
+            <Grid Grid.Row="1">
+                <StackPanel Orientation="Horizontal" Margin="10,0,0,10">
+                    <TextBox Width="400" Height="25" Text="{Binding InputText, Mode=TwoWay}"/>
+                    <Button Content="Send" Margin="10,0,0,0" Width="100" HorizontalContentAlignment="Center" Command="{Binding SendCommand}" />
+                </StackPanel>
+            </Grid>
+            
+            <Grid Grid.Row="2">
+                <StackPanel Orientation="Horizontal" Margin="10,0,0,10">
+                    <Button Content="Clear" Width="100" HorizontalContentAlignment="Center" Command="{Binding ClearOutputCommand}" />
+                    <CheckBox Content="Autoscroll" IsChecked="{Binding IsAutoScrollChecked}" Margin="30,0,0,0" Height="15"/>
+                </StackPanel>
+            </Grid>
+            
+        </Grid>
+        
+    </Grid>
+</UserControl>
