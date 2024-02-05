@@ -3,7 +3,7 @@
              x:Class="k3ng_cw_keyer_config.App"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
+    
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>

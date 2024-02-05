@@ -20,6 +20,7 @@
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             
@@ -27,64 +28,33 @@
                       Grid.Row="0"
                       Width="200"
                       Height="25"
-                      Margin="5,5,0,0"
+                      Margin="5,10,0,0"
                       SelectedValue="{Binding SelectedPort, Mode=TwoWay}"/>
 
-                <Grid Grid.Row="1" Margin="5,5,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="100"/>
-                    </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Grid.Row="1">
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox ItemsSource="{Binding CommandList}"
+                              Width="350"
+                              Height="25"
+                              Margin="5,5,0,0"
+                              SelectedValue="{Binding SelectedCommand, Mode=TwoWay}">
 
-                    <StackPanel Grid.Column="0" Margin="5,5,0,0" Orientation="Vertical">                 
-                        <Button Margin="0,0,0,3" Content="Help" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Iambic A mode" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Iambic B mode" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Switch to CW (from Hell)" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Ultimatic mode" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Bug mode" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Switch to Hell sending" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Transmit enable/disable" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="CW Training Module" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Toggle paddle reverse" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Toggle sidetone on/off" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Switch to regular speed mode" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Status" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Tune mode" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Manual PTT toggle" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Autospace on/off" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Create prosign" Width="200" HorizontalContentAlignment="Center"/>
-                    </StackPanel>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding CommandName}"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
 
-                    <StackPanel Grid.Column="1" Margin="5,5,0,0" Orientation="Vertical">
-                        <Button Margin="0,0,0,3" Content="Set serial number to" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Set sidetone frequency to" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Set weighting" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Set Farnsworth speed" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Program memory" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Switch to QRSS mode, dit length" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Set speed in WPM" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Switch to transmitter" Width="200" HorizontalContentAlignment="Center"/>
-                        <Button Margin="0,0,0,3" Content="Change wordspace to" Width="200" HorizontalContentAlignment="Center"/>
+                    </ComboBox>
+                    <TextBox Width="60" Height="25" IsVisible="{Binding SelectedCommand.HasParameter, Mode=TwoWay}" Margin="10,5,0,0" Text="{Binding ParameterString}"/>
+                </StackPanel>
 
-                    </StackPanel>
+                <Button Content="Send Command" Width="150" HorizontalContentAlignment="Center" Command="{Binding SendCmdCommand}" Margin="5" />
+                
+            </StackPanel>
 
-                    <StackPanel Grid.Column="2" Margin="5,5,0,0" Orientation="Vertical">
-                        <TextBox Height="20" Margin="0,0,0,0"/>
-                        <TextBox Height="20" Margin="0,1,0,0"/>
-                        <TextBox Height="20" Margin="0,2,0,0"/>
-                        <TextBox Height="20" Margin="0,2,0,0"/>
-                        <TextBox Height="20" Margin="0,2,0,0"/>
-                        <TextBox Height="20" Margin="0,2,0,0"/>
-                        <TextBox Height="20" Margin="0,2,0,0"/>
-                        <TextBox Height="20" Margin="0,2,0,0"/>
-                        <TextBox Height="20" Margin="0,2,0,0"/>
-                            
-                    </StackPanel>
-
-                </Grid>
-            
         </Grid>
 
         <Grid Grid.Column="1">
