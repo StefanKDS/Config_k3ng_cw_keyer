@@ -20,16 +20,20 @@
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="100"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            
-            <ComboBox ItemsSource="{Binding PortList}"
-                      Grid.Row="0"
-                      Width="200"
-                      Height="25"
-                      Margin="5,10,0,0"
-                      SelectedValue="{Binding SelectedPort, Mode=TwoWay}"/>
+			
+			<StackPanel Orientation="Vertical" Grid.Row="0">
+				<StackPanel Orientation="Horizontal">
+				    <ComboBox ItemsSource="{Binding PortList}"
+                          Width="200"
+                          Height="25"
+                          Margin="5,10,0,0"
+                          SelectedValue="{Binding SelectedPort, Mode=TwoWay}"/>
+				    <Button Content="Connect" Margin="5,10,0,0" Command="{Binding ConnectCommand}" />
+				</StackPanel>
+			</StackPanel>
 
             <StackPanel Orientation="Vertical" Grid.Row="1">
                 <StackPanel Orientation="Horizontal">

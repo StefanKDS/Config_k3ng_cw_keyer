@@ -68,11 +68,12 @@ public partial class MainViewModel : ViewModelBase
             if (value != this._selectedPort)
             {
                 this._selectedPort = value;
+                PortChanged();
             }
         }
     }
 
-    public ConfigItem SelectedCommand
+    public ConfigItem? SelectedCommand
     {
         get
         {
@@ -95,7 +96,7 @@ public partial class MainViewModel : ViewModelBase
     public ICommand SendCommand { get; }
 
     public ICommand SendCmdCommand { get; }
-
+    
     private void OnClearOutput()
     {
         this.OutputText = string.Empty;
