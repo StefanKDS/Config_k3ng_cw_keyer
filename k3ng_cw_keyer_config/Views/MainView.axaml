@@ -31,7 +31,6 @@
                           Height="25"
                           Margin="5,10,0,0"
                           SelectedValue="{Binding SelectedPort, Mode=TwoWay}"/>
-				    <Button Content="Connect" Margin="5,10,0,0" Command="{Binding ConnectCommand}" />
 				</StackPanel>
 			</StackPanel>
 
@@ -67,8 +66,8 @@
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            
-            <TextBox Grid.Row="0" Margin="10,10,10,10" Text="{Binding OutputText, Mode=TwoWay}" TextWrapping="Wrap" AcceptsReturn="True" CaretIndex="{Binding OutputCaretIndex}" />
+
+			<TextBox Grid.Row="0" Margin="10,10,10,10" Text="{Binding OutputText, Mode=TwoWay}" TextWrapping="Wrap" AcceptsReturn="True" CaretIndex="{Binding OutputCaretIndex}" />
 
             <Grid Grid.Row="1">
                 <StackPanel Orientation="Horizontal" Margin="10,0,0,10">
@@ -80,6 +79,7 @@
             <Grid Grid.Row="2">
                 <StackPanel Orientation="Horizontal" Margin="10,0,0,10">
                     <Button Content="Clear" Width="100" HorizontalContentAlignment="Center" Command="{Binding ClearOutputCommand}" />
+					<CheckBox Content="Clear before receive" Width="100" HorizontalContentAlignment="Center" Margin="30,0,0,0" IsChecked="{Binding IsClearBeforeReceive}" />
                     <CheckBox Content="Autoscroll" IsChecked="{Binding IsAutoScrollChecked}" Margin="30,0,0,0" Height="15"/>
                 </StackPanel>
             </Grid>

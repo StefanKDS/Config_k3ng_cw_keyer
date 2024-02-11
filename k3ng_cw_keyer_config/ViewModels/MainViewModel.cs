@@ -15,6 +15,9 @@ public partial class MainViewModel : ViewModelBase
     private string _selectedPort = "";
     private readonly SerialPort _serialPort;
     private ConfigItem? _selectedConfigItem;
+    private string _outputText;
+    private string _inputText;
+    private int _outputCaretIndex;
     #endregion
 
     #region Konstruktor / Destruktor
@@ -47,13 +50,48 @@ public partial class MainViewModel : ViewModelBase
 
     public ObservableCollection<ConfigItem> CommandList { get; set; }
 
-    public string OutputText { get; set; }
+    public string OutputText 
+    { 
+        get
+        {
+            return this._outputText;
+        }
+        set
+        {
+            this._outputText = value;
+            OnPropertyChanged();
+        }
+    }
 
-    public string InputText { get; set; }
+    public string InputText
+    {
+        get
+        {
+            return this._inputText;
+        }
+        set
+        {
+            this._inputText = value;
+            OnPropertyChanged();
+        }
+    }
 
     public bool IsAutoScrollChecked { get; set; }
 
-    public int OutputCaretIndex { get; set; }
+    public bool IsClearBeforeReceive { get; set; }
+
+    public int OutputCaretIndex
+    {
+        get
+        {
+            return _outputCaretIndex;
+        }
+        set
+        {
+            this._outputCaretIndex = value;
+            OnPropertyChanged();
+        }
+    }
 
     public string ParameterString { get; set; }
 
@@ -105,6 +143,12 @@ public partial class MainViewModel : ViewModelBase
     private void OnSend()
     {
         this._serialPort.Write(this.InputText);
+        this.InputText = string.Empty;
+
+        if (this.IsClearBeforeReceive == true)
+        {
+            this.OnClearOutput();
+        }
     }
 
     private async void OnSendCommand()
@@ -131,13 +175,23 @@ public partial class MainViewModel : ViewModelBase
             cmd += this.ParameterString;
             if (this._serialPort.IsOpen)
             {
-                this._serialPort.Write(cmd);
+
+                if (this.IsClearBeforeReceive == true)
+                {
+                    this.OnClearOutput();
+                }
+                this._serialPort.WriteLine(cmd);
             }
         }
         else
         {
             if (this._serialPort.IsOpen)
             {
+
+                if (this.IsClearBeforeReceive == true)
+                {
+                    this.OnClearOutput();
+                }
                 this._serialPort.Write(this.SelectedCommand.Command);
             }
         }
@@ -168,10 +222,10 @@ public partial class MainViewModel : ViewModelBase
 
         this._serialPort.BaudRate = 115200;
         this._serialPort.DataBits = 8;
-        this._serialPort.Handshake = Handshake.XOnXOff;
+        this._serialPort.Handshake = Handshake.None;
         this._serialPort.Parity = Parity.None;
         this._serialPort.PortName = this._selectedPort;
-        this._serialPort.StopBits = StopBits.One;
+        //this._serialPort.StopBits = StopBits.One;
         this._serialPort.DataReceived += this.SerialPort_DataReceived;
 
         this._serialPort.Open();
@@ -188,59 +242,63 @@ public partial class MainViewModel : ViewModelBase
         {
             this.OutputCaretIndex = int.MaxValue;
         }
+        else
+        {
+            this.OutputCaretIndex = 0;
+        }
     }
 
     private void InitCommandList()
     {
-        this.CommandList.Add(new ConfigItem("Help", "\\?"));
-        this.CommandList.Add(new ConfigItem("Paged Help", "\\/"));
-        this.CommandList.Add(new ConfigItem("Play memory", "\\#", true));
-        this.CommandList.Add(new ConfigItem("Iambic A mode", "\\a"));
-        this.CommandList.Add(new ConfigItem("Iambic B mode", "\\b"));
-        this.CommandList.Add(new ConfigItem("Switch to CW", "\\c"));
-        this.CommandList.Add(new ConfigItem("Set serial number to ####", "\\e####", true));
-        this.CommandList.Add(new ConfigItem("Set sidetone frequency to #### hertz", "\\f####", true));
-        this.CommandList.Add(new ConfigItem("Bug mode", "\\g"));
-        this.CommandList.Add(new ConfigItem("Switch to Hell sending", "\\h"));
-        this.CommandList.Add(new ConfigItem("Transmit enable/disable", "\\i"));
-        this.CommandList.Add(new ConfigItem("Dah to dit ratio (300 = 3.00) ###", "\\j###", true));
-        this.CommandList.Add(new ConfigItem("CW Training Module", "\\k"));
-        this.CommandList.Add(new ConfigItem("Set weighting (50 = normal) ##", "\\l##", true));
-        this.CommandList.Add(new ConfigItem("Set Farnsworth speed ###", "\\m####", true));
-        this.CommandList.Add(new ConfigItem("Toggle paddle reverse", "\\n"));
-        this.CommandList.Add(new ConfigItem("Toggle sidetone on/off", "\\o"));
-        this.CommandList.Add(new ConfigItem("Program memory #", "\\p#", true));
-        this.CommandList.Add(new ConfigItem("Switch to QRSS mode, dit length ## seconds", "\\q##", true));
-        this.CommandList.Add(new ConfigItem("Switch to regular speed mode", "\\r"));
-        this.CommandList.Add(new ConfigItem("Status", "\\s"));
-        this.CommandList.Add(new ConfigItem("Tune mode", "\\t"));
-        this.CommandList.Add(new ConfigItem("Toggle potentiometer active / inactive", "\\v"));
-        this.CommandList.Add(new ConfigItem("Set speed in WPM ###", "\\w###", true));
-        this.CommandList.Add(new ConfigItem("Switch to transmitter #", "\\x#", true));
-        this.CommandList.Add(new ConfigItem("Change wordspace to # elements (# = 1 to 9)", "\\y#", true));
-        this.CommandList.Add(new ConfigItem("Autospace on/off", "\\z"));
-        this.CommandList.Add(new ConfigItem("Create prosign", "\\+"));
-        this.CommandList.Add(new ConfigItem("Repeat play memory ##", "\\!##", true));
-        this.CommandList.Add(new ConfigItem("Set memory repeat (milliseconds)", "\\|####", true));
-        this.CommandList.Add(new ConfigItem("Toggle paddle echo", "\\*"));
-        this.CommandList.Add(new ConfigItem("Toggle wait for carriage return to send CW / send CW immediately", "\\^"));
-        this.CommandList.Add(new ConfigItem("Toggle CMOS Super Keyer Timing on/off", "\\&"));
-        this.CommandList.Add(new ConfigItem("Set CMOS Super Keyer Timing ##%", "\\%##"));
-        this.CommandList.Add(new ConfigItem("Toggle dit buffer on/off", "\\."));
-        this.CommandList.Add(new ConfigItem("Toggle dah buffer on/off", "\\-"));
-        this.CommandList.Add(new ConfigItem("CW send echo inhibit toggle", "\\:"));
-        this.CommandList.Add(new ConfigItem("QLF mode on/off", "\\{"));
-        this.CommandList.Add(new ConfigItem("Send serial number, then increment", "\\>"));
-        this.CommandList.Add(new ConfigItem("Send current serial number", "\\<"));
-        this.CommandList.Add(new ConfigItem("Send current serial number in cut numbers", "\\("));
-        this.CommandList.Add(new ConfigItem("Send serial number with cut numbers, then increment", "\\)"));
-        this.CommandList.Add(new ConfigItem("Set Quiet Paddle Interruption", "\\["));
-        this.CommandList.Add(new ConfigItem("Toggle American Morse mode", "\\="));
-        this.CommandList.Add(new ConfigItem("Mill Mode", "\\@"));
-        this.CommandList.Add(new ConfigItem("Set potentiometer range - low ## / high ##", "\\}####", true));
-        this.CommandList.Add(new ConfigItem(" Hold PTT active with buffered characters", "\\\""));
-        this.CommandList.Add(new ConfigItem("PTT Enable / Disable", "\\]"));
-        this.CommandList.Add(new ConfigItem("Immediately clear the buffer, stop memory sending, etc.", "\\\\"));
+        this.CommandList.Add(new ConfigItem("Help", @"\?"));
+        this.CommandList.Add(new ConfigItem("Paged Help", @"\/"));
+        this.CommandList.Add(new ConfigItem("Play memory", @"\#", true));
+        this.CommandList.Add(new ConfigItem("Iambic A mode", @"\a"));
+        this.CommandList.Add(new ConfigItem("Iambic B mode", @"\b"));
+        this.CommandList.Add(new ConfigItem("Switch to CW", @"\c"));
+        this.CommandList.Add(new ConfigItem("Set serial number to ####", @"\e####", true));
+        this.CommandList.Add(new ConfigItem("Set sidetone frequency to #### hertz", @"\f####", true));
+        this.CommandList.Add(new ConfigItem("Bug mode", @"\g"));
+        this.CommandList.Add(new ConfigItem("Switch to Hell sending", @"\h"));
+        this.CommandList.Add(new ConfigItem("Transmit enable/disable", @"\i"));
+        this.CommandList.Add(new ConfigItem("Dah to dit ratio (300 = 3.00) ###", @"\j###", true));
+        this.CommandList.Add(new ConfigItem("CW Training Module", @"\k"));
+        this.CommandList.Add(new ConfigItem("Set weighting (50 = normal) ##", @"\l##", true));
+        this.CommandList.Add(new ConfigItem("Set Farnsworth speed ###", @"\m###", true));
+        this.CommandList.Add(new ConfigItem("Toggle paddle reverse", @"\n"));
+        this.CommandList.Add(new ConfigItem("Toggle sidetone on/off", @"\o"));
+        this.CommandList.Add(new ConfigItem("Program memory #", @"\p#", true));
+        this.CommandList.Add(new ConfigItem("Switch to QRSS mode, dit length ## seconds", @"\q##", true));
+        this.CommandList.Add(new ConfigItem("Switch to regular speed mode", @"\r"));
+        this.CommandList.Add(new ConfigItem("Status", @"\s"));
+        this.CommandList.Add(new ConfigItem("Tune mode", @"\t"));
+        this.CommandList.Add(new ConfigItem("Toggle potentiometer active / inactive", @"\v"));
+        this.CommandList.Add(new ConfigItem("Set speed in WPM ###", @"\w###", true));
+        this.CommandList.Add(new ConfigItem("Switch to transmitter #", @"\x#", true));
+        this.CommandList.Add(new ConfigItem("Change wordspace to # elements (# = 1 to 9)", @"\y#", true));
+        this.CommandList.Add(new ConfigItem("Autospace on/off", @"\z"));
+        this.CommandList.Add(new ConfigItem("Create prosign", @"\+"));
+        this.CommandList.Add(new ConfigItem("Repeat play memory ##", @"\!##", true));
+        this.CommandList.Add(new ConfigItem("Set memory repeat (milliseconds)", @"\|####", true));
+        this.CommandList.Add(new ConfigItem("Toggle paddle echo", @"\*"));
+        this.CommandList.Add(new ConfigItem("Toggle wait for carriage return to send CW / send CW immediately", @"\^"));
+        this.CommandList.Add(new ConfigItem("Toggle CMOS Super Keyer Timing on/off", @"\&"));
+        this.CommandList.Add(new ConfigItem("Set CMOS Super Keyer Timing ##%", @"\%##"));
+        this.CommandList.Add(new ConfigItem("Toggle dit buffer on/off", @"\."));
+        this.CommandList.Add(new ConfigItem("Toggle dah buffer on/off", @"\-"));
+        this.CommandList.Add(new ConfigItem("CW send echo inhibit toggle", @"\:"));
+        this.CommandList.Add(new ConfigItem("QLF mode on/off", @"\{"));
+        this.CommandList.Add(new ConfigItem("Send serial number, then increment", @"\>"));
+        this.CommandList.Add(new ConfigItem("Send current serial number", @"\<"));
+        this.CommandList.Add(new ConfigItem("Send current serial number in cut numbers", @"\("));
+        this.CommandList.Add(new ConfigItem("Send serial number with cut numbers, then increment", @"\)"));
+        this.CommandList.Add(new ConfigItem("Set Quiet Paddle Interruption", @"\["));
+        this.CommandList.Add(new ConfigItem("Toggle American Morse mode", @"\="));
+        this.CommandList.Add(new ConfigItem("Mill Mode", @"\@"));
+        this.CommandList.Add(new ConfigItem("Set potentiometer range - low ## / high ##", @"\}####", true));
+       // this.CommandList.Add(new ConfigItem(" Hold PTT active with buffered characters", @"\\""));
+        this.CommandList.Add(new ConfigItem("PTT Enable / Disable", @"\]"));
+        this.CommandList.Add(new ConfigItem("Immediately clear the buffer, stop memory sending, etc.", @"\\"));
 
     }
     #endregion
