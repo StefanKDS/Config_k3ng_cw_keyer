@@ -2,14 +2,10 @@ using CommunityToolkit.Mvvm.Input;
 using k3ng_cw_keyer_config.Model;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Serialization;
 
@@ -186,7 +182,7 @@ public partial class MainViewModel : ViewModelBase
         this.OutputText = string.Empty;
     }
 
-    private async void OnRemoveFavItem()
+    private void OnRemoveFavItem()
     {
         if (this.SelectedFavItem == null)
         {
@@ -195,7 +191,7 @@ public partial class MainViewModel : ViewModelBase
 
         this.FavList.Remove(this.SelectedFavItem);
 
-        await this.SaveToStreamAsync();
+        this.SaveToStream();
     }
 
     private void OnSend()
@@ -229,7 +225,7 @@ public partial class MainViewModel : ViewModelBase
         }
 
         this.FavList.Add(new FavItem(SendFav, this.SelectedCommand, this.ParameterString));
-        await this.SaveToStreamAsync();
+        this.SaveToStream();
     }
 
     private async void OnSendCommand()
@@ -341,7 +337,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    private async Task SaveToStreamAsync()
+    private void SaveToStream()
     {
         XmlSerializer xs = new XmlSerializer(typeof(ObservableCollection<FavItem>));
         using (StreamWriter wr = new StreamWriter("favdata.xml"))
