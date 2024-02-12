@@ -20,7 +20,7 @@
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="100"/>
+                <RowDefinition Height="80"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 			
@@ -53,10 +53,36 @@
                     </ComboBox>
                     <TextBox Width="60" Height="25" IsVisible="{Binding SelectedCommand.HasParameter, Mode=TwoWay}" Margin="10,5,0,0" Text="{Binding ParameterString}"/>
                 </StackPanel>
-
-                <Button Content="Send Command" Width="150" HorizontalContentAlignment="Center" Command="{Binding SendCmdCommand}" Margin="5" />
-                
+				<StackPanel Orientation="Horizontal">
+                    <Button Content="Send Command" Width="150" HorizontalContentAlignment="Center" Command="{Binding SendCmdCommand}" Margin="5" />
+					<Button Content="Add as Favourite" Width="150" HorizontalContentAlignment="Center" Command="{Binding AddFavCommand}" Margin="5" />
+				</StackPanel>
             </StackPanel>
+
+			<Grid Grid.Row="2">
+				<ListBox MinHeight="200" Width="500" Margin="0,0,0,10" ItemsSource="{Binding FavList}" SelectedItem="{Binding SelectedFavItem}">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*"/>
+									<ColumnDefinition Width="50"/>
+									<ColumnDefinition Width="70"/>
+								</Grid.ColumnDefinitions>
+
+								<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{Binding ConfigItem.CommandName}"/>
+								<TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Parameter}"/>
+								<Button Grid.Column="2" VerticalAlignment="Center" Content="Send" Command="{Binding SendFavCommand}"/>
+							</Grid>	
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+					<ListBox.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Remove" Command="{Binding RemoveFavItemCommand}"/>
+						</ContextMenu>
+					</ListBox.ContextMenu>
+				</ListBox>
+			</Grid>
 
         </Grid>
 
@@ -79,7 +105,7 @@
             <Grid Grid.Row="2">
                 <StackPanel Orientation="Horizontal" Margin="10,0,0,10">
                     <Button Content="Clear" Width="100" HorizontalContentAlignment="Center" Command="{Binding ClearOutputCommand}" />
-					<CheckBox Content="Clear before receive" Width="100" HorizontalContentAlignment="Center" Margin="30,0,0,0" IsChecked="{Binding IsClearBeforeReceive}" />
+					<CheckBox Content="Clear before receive" Width="200" HorizontalContentAlignment="Center" Margin="30,0,0,0" IsChecked="{Binding IsClearBeforeReceive}" />
                     <CheckBox Content="Autoscroll" IsChecked="{Binding IsAutoScrollChecked}" Margin="30,0,0,0" Height="15"/>
                 </StackPanel>
             </Grid>

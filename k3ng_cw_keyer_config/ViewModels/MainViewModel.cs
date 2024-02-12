@@ -2,10 +2,16 @@ using CommunityToolkit.Mvvm.Input;
 using k3ng_cw_keyer_config.Model;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Xml.Serialization;
 
 namespace k3ng_cw_keyer_config.ViewModels;
 
@@ -18,6 +24,8 @@ public partial class MainViewModel : ViewModelBase
     private string _outputText;
     private string _inputText;
     private int _outputCaretIndex;
+    private string _parameterString;
+    private FavItem _selectedFavItem;
     #endregion
 
     #region Konstruktor / Destruktor
@@ -25,14 +33,19 @@ public partial class MainViewModel : ViewModelBase
     {
         this.PortList = new ObservableCollection<string>();
         this.CommandList = new ObservableCollection<ConfigItem>();
+        this.FavList = new ObservableCollection<FavItem>();
         this._serialPort = new SerialPort();
 
         this.ClearOutputCommand = new RelayCommand(this.OnClearOutput);
         this.SendCommand = new RelayCommand(this.OnSend);
         this.SendCmdCommand = new RelayCommand(this.OnSendCommand);
+        this.AddFavCommand = new RelayCommand(this.OnAddFav);
+        this.RemoveFavItemCommand = new RelayCommand(this.OnRemoveFavItem);
 
         this.ListAlAvailablePorts();
         this.InitCommandList();
+
+        this.LoadFavData();
     }
 
     ~MainViewModel()
@@ -49,6 +62,8 @@ public partial class MainViewModel : ViewModelBase
     public ObservableCollection<string> PortList { get; set; }
 
     public ObservableCollection<ConfigItem> CommandList { get; set; }
+
+    public ObservableCollection<FavItem> FavList { get; set; }
 
     public string OutputText 
     { 
@@ -84,7 +99,7 @@ public partial class MainViewModel : ViewModelBase
     {
         get
         {
-            return _outputCaretIndex;
+            return this._outputCaretIndex;
         }
         set
         {
@@ -93,7 +108,18 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    public string ParameterString { get; set; }
+    public string ParameterString
+    {
+        get
+        {
+            return this._parameterString;
+        }
+        set
+        {
+            this._parameterString = value;
+            OnPropertyChanged();
+        }
+    }
 
     public string SelectedPort
     {
@@ -121,7 +147,23 @@ public partial class MainViewModel : ViewModelBase
         {
             if (value != this._selectedConfigItem)
             {
+                this.ParameterString = string.Empty;
                 this._selectedConfigItem = value;
+            }
+        }
+    }
+
+    public FavItem? SelectedFavItem
+    {
+        get
+        {
+            return this._selectedFavItem;
+        }
+        set
+        {
+            if (value != this._selectedFavItem)
+            {
+                this._selectedFavItem = value;
             }
         }
     }
@@ -134,21 +176,60 @@ public partial class MainViewModel : ViewModelBase
     public ICommand SendCommand { get; }
 
     public ICommand SendCmdCommand { get; }
-    
+
+    public ICommand AddFavCommand { get; }
+
+    public ICommand RemoveFavItemCommand { get; }
+
     private void OnClearOutput()
     {
         this.OutputText = string.Empty;
     }
 
+    private async void OnRemoveFavItem()
+    {
+        if (this.SelectedFavItem == null)
+        {
+            return;
+        }
+
+        this.FavList.Remove(this.SelectedFavItem);
+
+        await this.SaveToStreamAsync();
+    }
+
     private void OnSend()
     {
-        this._serialPort.Write(this.InputText);
+        this._serialPort.Write(string.Format("{0}\r\n", this.InputText));
         this.InputText = string.Empty;
 
         if (this.IsClearBeforeReceive == true)
         {
             this.OnClearOutput();
         }
+    }
+
+    private async void OnAddFav()
+    {
+        if (this.SelectedCommand == null)
+        {
+            return;
+        }
+
+        if (this.SelectedCommand.HasParameter)
+        {
+            int nbrOfDigits = ExtractNbrOfDigits(this.SelectedCommand.Command);
+
+            if (this.ParameterString.Length != nbrOfDigits)
+            {
+                MsBox.Avalonia.Base.IMsBox<ButtonResult> box = MessageBoxManager.GetMessageBoxStandard("Error", "Wrong parameter length", ButtonEnum.Ok);
+                await box.ShowAsync();
+                return;
+            }
+        }
+
+        this.FavList.Add(new FavItem(SendFav, this.SelectedCommand, this.ParameterString));
+        await this.SaveToStreamAsync();
     }
 
     private async void OnSendCommand()
@@ -160,8 +241,6 @@ public partial class MainViewModel : ViewModelBase
 
         if (this.SelectedCommand.HasParameter)
         {
-            string cmd = string.Empty;
-
             int nbrOfDigits = ExtractNbrOfDigits(this.SelectedCommand.Command);
 
             if (this.ParameterString.Length != nbrOfDigits)
@@ -171,7 +250,7 @@ public partial class MainViewModel : ViewModelBase
                 return;
             }
 
-            cmd = this.SelectedCommand.Command.Remove(this.SelectedCommand.Command.Length - nbrOfDigits, nbrOfDigits);
+            string cmd = this.SelectedCommand.Command.Remove(this.SelectedCommand.Command.Length - nbrOfDigits, nbrOfDigits);
             cmd += this.ParameterString;
             if (this._serialPort.IsOpen)
             {
@@ -180,7 +259,8 @@ public partial class MainViewModel : ViewModelBase
                 {
                     this.OnClearOutput();
                 }
-                this._serialPort.WriteLine(cmd);
+
+                this._serialPort.Write(string.Format("{0}\r\n", cmd));
             }
         }
         else
@@ -192,13 +272,27 @@ public partial class MainViewModel : ViewModelBase
                 {
                     this.OnClearOutput();
                 }
-                this._serialPort.Write(this.SelectedCommand.Command);
+                this._serialPort.Write(string.Format("{0}\r\n", this.SelectedCommand.Command));
             }
         }
     }
     #endregion
 
     #region Helper
+    private void SendFav(string cmd)
+    {
+        if (this._serialPort.IsOpen)
+        {
+
+            if (this.IsClearBeforeReceive == true)
+            {
+                this.OnClearOutput();
+            }
+
+            this._serialPort.Write(string.Format("{0}\r\n", cmd));
+        }
+    }
+
     private static int ExtractNbrOfDigits(string parameter)
     {
         return parameter.Count(c => c == '#');
@@ -222,10 +316,9 @@ public partial class MainViewModel : ViewModelBase
 
         this._serialPort.BaudRate = 115200;
         this._serialPort.DataBits = 8;
-        this._serialPort.Handshake = Handshake.None;
         this._serialPort.Parity = Parity.None;
         this._serialPort.PortName = this._selectedPort;
-        //this._serialPort.StopBits = StopBits.One;
+        this._serialPort.StopBits = StopBits.One;
         this._serialPort.DataReceived += this.SerialPort_DataReceived;
 
         this._serialPort.Open();
@@ -248,11 +341,41 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
+    private async Task SaveToStreamAsync()
+    {
+        XmlSerializer xs = new XmlSerializer(typeof(ObservableCollection<FavItem>));
+        using (StreamWriter wr = new StreamWriter("favdata.xml"))
+        {
+            xs.Serialize(wr, FavList);
+        }
+    }
+
+    private void LoadFavData()
+    {
+        if (!File.Exists("favdata.xml"))
+        {
+            return;
+        }
+
+        XmlSerializer xs = new XmlSerializer(typeof(ObservableCollection<FavItem>));
+        using (StreamReader rd = new StreamReader("favdata.xml"))
+        {
+            var tempList = xs.Deserialize(rd) as ObservableCollection<FavItem>;
+            if (tempList != null)
+            {
+                foreach (var item in tempList)
+                {
+                    FavList.Add(new FavItem(SendFav,item.ConfigItem, item.Parameter));
+                }
+            }
+        }
+    }
+
     private void InitCommandList()
     {
         this.CommandList.Add(new ConfigItem("Help", @"\?"));
         this.CommandList.Add(new ConfigItem("Paged Help", @"\/"));
-        this.CommandList.Add(new ConfigItem("Play memory", @"\#", true));
+        this.CommandList.Add(new ConfigItem("Play memory #", @"\#", true));
         this.CommandList.Add(new ConfigItem("Iambic A mode", @"\a"));
         this.CommandList.Add(new ConfigItem("Iambic B mode", @"\b"));
         this.CommandList.Add(new ConfigItem("Switch to CW", @"\c"));

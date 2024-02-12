@@ -2,6 +2,10 @@ namespace k3ng_cw_keyer_config.Model;
 public class ConfigItem
 {
     #region Konstruktor
+    public ConfigItem()
+    {
+    }
+
     public ConfigItem(string commandName, string command, bool hasParameter = false)
     {
         this.Command = command;

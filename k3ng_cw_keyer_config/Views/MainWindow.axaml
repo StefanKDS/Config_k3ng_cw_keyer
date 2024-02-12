@@ -7,6 +7,6 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="k3ng_cw_keyer_config.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="k3ng_cw_keyer_config">
+        Title="k3ng_cw_keyer_config v0.1">
         <views:MainView />
 </Window>
