@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "k3ng_cw_keyer_config", "k3n
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "k3ng_cw_keyer_config.Desktop", "k3ng_cw_keyer_config.Desktop\k3ng_cw_keyer_config.Desktop.csproj", "{B51993C2-21BD-4706-B9F3-C5A5D96A7F8E}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WindowsSetup", "WindowsSetup\WindowsSetup.vdproj", "{3277AFDF-4BA1-4B18-8CC4-EF22C3D5B0BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,8 @@ Global
 		{B51993C2-21BD-4706-B9F3-C5A5D96A7F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B51993C2-21BD-4706-B9F3-C5A5D96A7F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B51993C2-21BD-4706-B9F3-C5A5D96A7F8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3277AFDF-4BA1-4B18-8CC4-EF22C3D5B0BF}.Debug|Any CPU.ActiveCfg = Debug
+		{3277AFDF-4BA1-4B18-8CC4-EF22C3D5B0BF}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
